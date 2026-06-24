@@ -1,0 +1,38 @@
+services:
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: deepl-mcp-rustfs
+    ports:
+      - "19000:9000"
+      - "19001:9001"
+    volumes:
+      - rustfs_data:/data
+    environment:
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_CONSOLE_ENABLE: "true"
+    command: ["--console-enable", "/data"]
+    restart: unless-stopped
+
+  deepl-mcp-server:
+    build: .
+    container_name: deepl-mcp-server
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      MCP_TRANSPORT: http
+      MCP_HTTP_ADDR: ":8080"
+      # 容器内通过 compose 服务名访问 rustfs
+      APP_OSS_ENDPOINT: http://rustfs:9000
+      APP_OSS_ACCESS_KEY: rustfsadmin
+      APP_OSS_SECRET_KEY: rustfsadmin
+      APP_OSS_BUCKET: deepl-mcp
+      APP_OSS_REGION: us-east-1
+    depends_on:
+      - rustfs
+    restart: unless-stopped
+
+volumes:
+  rustfs_data:

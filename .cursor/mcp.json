@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "deepl-go": {
+      "url": "http://localhost:8080/mcp"
+    }
+  }
+}

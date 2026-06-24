@@ -1,0 +1,4 @@
+.env
+deepl-mcp-server
+*.sum
+.DS_Store
