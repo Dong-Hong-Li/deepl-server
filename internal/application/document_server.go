@@ -3,8 +3,8 @@ package application
 import (
 	"context"
 	"crypto/sha256"
-	"deep-map-server/internal/delivery"
 	"deep-map-server/internal/domain"
+	"deep-map-server/utils"
 	"encoding/hex"
 	"errors"
 	"os"
@@ -48,7 +48,7 @@ func (s *DocumentTranslateServer) TranslateDocument(ctx context.Context, entity 
 	// InsertResume
 
 	// 将源文件添加进对象存储
-	fileKey := delivery.NewFileKey("before_translate", filepath.Ext(entity.InputFile))
+	fileKey := utils.NewFileKey("before_translate", filepath.Ext(entity.InputFile))
 	s.objectStorage.Upload(ctx, fileKey, content, "application/octet-stream")
 
 	result, err := s.translator.TranslateDocument(ctx, entity)
@@ -62,7 +62,7 @@ func (s *DocumentTranslateServer) TranslateDocument(ctx context.Context, entity 
 		return nil, err
 	}
 
-	fileKey = delivery.NewFileKey("after_translate", filepath.Ext(entity.InputFile))
+	fileKey = utils.NewFileKey("after_translate", filepath.Ext(entity.InputFile))
 	s.objectStorage.Upload(ctx, fileKey, content, "application/octet-stream")
 
 	filePath, err := s.objectStorage.PresignGetObjectURL(ctx, fileKey)

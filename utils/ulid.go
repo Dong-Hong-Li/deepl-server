@@ -1,4 +1,4 @@
-package delivery
+package utils
 
 import (
 	"crypto/rand"
