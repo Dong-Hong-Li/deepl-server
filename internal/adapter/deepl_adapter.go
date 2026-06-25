@@ -108,6 +108,10 @@ func (a *DeepLAdapter) Rephrase(ctx context.Context, entity domain.RephraseEntit
 
 	body, err := a.client.PostJSON(ctx, rephrasePath, payload)
 	if err != nil {
+		var apiErr *deepl.APIError
+		if errors.As(err, &apiErr) && apiErr.StatusCode == 403 {
+			return "", fmt.Errorf("DeepL Write 改写接口需要 API Pro 订阅，Free 版 Key 无权限（403）")
+		}
 		return "", err
 	}
 

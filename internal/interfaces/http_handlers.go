@@ -18,7 +18,7 @@ import (
 func (c *TranslationController) handleGetSourceLanguages(w http.ResponseWriter, r *http.Request) {
 	resp, err := c.getSourceLanguages(r.Context())
 	if err != nil {
-		binding.WriteError(w, err)
+		binding.WriteError(w, r, err)
 		return
 	}
 	binding.WriteJSON(w, http.StatusOK, resp)
@@ -33,7 +33,7 @@ func (c *TranslationController) handleGetSourceLanguages(w http.ResponseWriter, 
 func (c *TranslationController) handleGetTargetLanguages(w http.ResponseWriter, r *http.Request) {
 	resp, err := c.getTargetLanguages(r.Context())
 	if err != nil {
-		binding.WriteError(w, err)
+		binding.WriteError(w, r, err)
 		return
 	}
 	binding.WriteJSON(w, http.StatusOK, resp)
@@ -52,12 +52,12 @@ func (c *TranslationController) handleTranslateText(w http.ResponseWriter, r *ht
 		return
 	}
 	if err := binding.Validate(req); err != nil {
-		binding.WriteError(w, err)
+		binding.WriteError(w, r, err)
 		return
 	}
 	resp, err := c.translateText(r.Context(), req)
 	if err != nil {
-		binding.WriteError(w, err)
+		binding.WriteError(w, r, err)
 		return
 	}
 	binding.WriteJSON(w, http.StatusOK, resp)
@@ -72,7 +72,7 @@ func (c *TranslationController) handleTranslateText(w http.ResponseWriter, r *ht
 func (c *TranslationController) handleGetWritingStyles(w http.ResponseWriter, r *http.Request) {
 	resp, err := c.getWritingStyles(r.Context())
 	if err != nil {
-		binding.WriteError(w, err)
+		binding.WriteError(w, r, err)
 		return
 	}
 	binding.WriteJSON(w, http.StatusOK, resp)
@@ -87,7 +87,7 @@ func (c *TranslationController) handleGetWritingStyles(w http.ResponseWriter, r 
 func (c *TranslationController) handleGetWritingTones(w http.ResponseWriter, r *http.Request) {
 	resp, err := c.getWritingTones(r.Context())
 	if err != nil {
-		binding.WriteError(w, err)
+		binding.WriteError(w, r, err)
 		return
 	}
 	binding.WriteJSON(w, http.StatusOK, resp)
@@ -106,12 +106,12 @@ func (c *TranslationController) handleRephraseText(w http.ResponseWriter, r *htt
 		return
 	}
 	if err := binding.Validate(req); err != nil {
-		binding.WriteError(w, err)
+		binding.WriteError(w, r, err)
 		return
 	}
 	resp, err := c.rephraseText(r.Context(), req)
 	if err != nil {
-		binding.WriteError(w, err)
+		binding.WriteError(w, r, err)
 		return
 	}
 	binding.WriteJSON(w, http.StatusOK, resp)
@@ -130,12 +130,12 @@ func (c *TranslationController) handleTranslateDocument(w http.ResponseWriter, r
 		return
 	}
 	if err := binding.Validate(req); err != nil {
-		binding.WriteError(w, err)
+		binding.WriteError(w, r, err)
 		return
 	}
 	resp, err := c.translateDocument(r.Context(), req)
 	if err != nil {
-		binding.WriteError(w, err)
+		binding.WriteError(w, r, err)
 		return
 	}
 	binding.WriteJSON(w, http.StatusOK, resp)

@@ -2,3 +2,5 @@
 deepl-mcp-server
 *.sum
 .DS_Store
+translate_frontend/node_modules
+translate_frontend/dist

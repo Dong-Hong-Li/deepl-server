@@ -215,3 +215,7 @@ type APIError struct {
 func (e *APIError) Error() string {
 	return fmt.Sprintf("deepl API error (%d): %s", e.StatusCode, e.Body)
 }
+
+func (e *APIError) HTTPStatus() int {
+	return e.StatusCode
+}

@@ -3,6 +3,7 @@ package binding
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 )
 
@@ -12,11 +13,30 @@ func WriteJSON(w http.ResponseWriter, status int, v any) {
 	_ = json.NewEncoder(w).Encode(v)
 }
 
-func WriteError(w http.ResponseWriter, err error) {
+// StatusError 可由业务层实现，用于返回非 500 的 HTTP 状态码。
+type StatusError interface {
+	error
+	HTTPStatus() int
+}
+
+func WriteError(w http.ResponseWriter, r *http.Request, err error) {
 	var validationErr *ValidationError
 	if errors.As(err, &validationErr) {
 		WriteJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
 		return
 	}
-	WriteJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+
+	status := http.StatusInternalServerError
+	var statusErr StatusError
+	if errors.As(err, &statusErr) {
+		status = statusErr.HTTPStatus()
+	}
+
+	if r != nil {
+		log.Printf("%s %s -> %d: %v", r.Method, r.URL.Path, status, err)
+	} else {
+		log.Printf("handler error -> %d: %v", status, err)
+	}
+
+	WriteJSON(w, status, map[string]string{"error": err.Error()})
 }

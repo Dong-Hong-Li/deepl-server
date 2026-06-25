@@ -51,6 +51,7 @@ func NewHTTPHandler(authToken string, server *mcp.Server, routerRegistries []HTT
 	}, nil)
 
 	r := chi.NewRouter()
+	r.Use(corsMiddleware)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
@@ -71,6 +72,19 @@ func NewHTTPHandler(authToken string, server *mcp.Server, routerRegistries []HTT
 	})
 
 	return r
+}
+
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }
 
 func bearerAuth(expected string) func(http.Handler) http.Handler {
